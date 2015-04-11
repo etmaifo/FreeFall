@@ -91,6 +91,38 @@ class BgObject(WorldObject):
     def update(self):
         pass
 
+class Overlay(WorldObject):
+    def __init__(self, x, y, width, height, image):
+        WorldObject.__init__(self, x, y, width, height, image)
+        self.pressed = False
+        self.frame = 0
+        self.image = self.image.convert()
+
+    def handleEvents(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if pygame.mouse.get_pos()[0] > SCREEN.width/2.0:
+                self.rect.right = SCREEN.width
+            else:
+                self.rect.x = 0
+            self.frame = 1
+
+
+    def update(self):
+        if self.frame > 0:
+            self.animate()
+
+    def animate(self):
+        self.frame += 1
+        if self.frame < 30:
+            self.image.set_alpha(30 - self.frame * 2)
+        else:
+            self.frame = 0
+
+
+    def draw(self, screen):
+        if self.frame > 0:
+            screen.blit(self.image, self.rect)
+
 
 class Moveable(WorldObject):
 	def __init__(self, x, y, width, height, image):
@@ -277,13 +309,13 @@ class Debris(object):
 
 
 class Enemy(object):
-    def __init__(self, number):
+    def __init__(self, number, speed):
         self.number = number
         self.blocks = pygame.sprite.RenderUpdates()
         self.givePoint = True
         self.hide = False
 
-        self.spawn(4)
+        self.spawn(speed)
 
     def spawn(self, speed):
         randomNumbers = [i for i in range(6)]

@@ -8,16 +8,19 @@ class Stage(object):
         self.level = 2
         self.entities = pygame.sprite.RenderUpdates()
         self.grid = []
-        self.enemy = Enemy(2)
+        self.level_speed = 4
+        self.level_blocks = 2
+        self.enemy = Enemy(self.level_blocks, self.level_speed)
         self.reset = False
         
         self.assemble()
 
-    def update(self):
+    def update(self, score):
         self.enemy.update()
+        self.updateLevel(score)
         if self.enemy.hide:
             self.entities.remove(self.enemy.blocks)
-            self.enemy = Enemy(2)
+            self.enemy = Enemy(self.level_blocks, self.level_speed)
             self.entities.add(self.enemy.blocks)
             self.player.collision_group.add(self.enemy.blocks)
         if self.player.collided:
@@ -47,3 +50,18 @@ class Stage(object):
     def spawn(self):
         self.blocks = ChainBlock(4)
         
+    def updateLevel(self, score):
+        if score < 10:
+            self.level_speed = 4
+        elif score < 50:
+            self.level_blocks = 3
+        elif score < 100:
+            self.level_speed = 5
+        elif score < 200:
+            self.level_blocks = 4
+        elif score < 500:
+            self.level_speed = 8
+        elif score < 1000:
+            self.level_blocks = 5
+        elif score < 2000:
+            self.level_speed = 10

@@ -39,8 +39,9 @@ class GameOverScreen(object):
 
 
     def handleEvents(self, event):
-        if (event.type == MOUSEBUTTONUP):
+        if (event.type == MOUSEBUTTONDOWN):
             pos = pygame.mouse.get_pos()
+            print "Mouse: ", pos, " - Button: ", self.retry_button.rect.center
             if self.retry_button.rect.collidepoint(pos):
                 self.retry = True
             elif self.quit_button.rect.collidepoint(pos):
@@ -90,9 +91,6 @@ class GameOverScreen(object):
 
 
     def update(self, score, best, retries):        
-        '''
-        for entity in self.gameover_group:
-            entity.update()'''
         self.gameover_group.update()
         
         self.score_label.update("Score", self.score_label.rect.x, self.score_label.rect.y)

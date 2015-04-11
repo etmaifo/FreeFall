@@ -40,10 +40,7 @@ class HUD:
     title = pygame.image.load(FILES.get_path("img", "gametitle.png"))
     howtoplay = pygame.image.load(FILES.get_path("img", "howtoplay.png"))
     ripple = pygame.image.load(FILES.get_path("img", "ripple.png"))
-    ad = pygame.image.load(FILES.get_path("img", "ad.png"))
-    #buttons_bg = pygame.image.load(FILES.get_path("img", "button_rack.png"))
-    #button = pygame.image.load(FILES.get_path("img", "button.png"))
-    #adfull = pygame.image.load(FILES.get_path("img", "adfull.png"))
+    overlay = pygame.image.load(FILES.get_path("img", "overlay1.png"))
 
 
 class BUTTON:

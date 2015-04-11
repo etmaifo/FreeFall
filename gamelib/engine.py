@@ -41,6 +41,8 @@ class GameEngine(object):
         self.fpsClock = pygame.time.Clock()
         self.state = STATE.title_screen
         self.score = 0
+        self.best = 0
+        self.retries = 0
 
         #self.bg = grid_image
         self.bg = bg
@@ -50,12 +52,15 @@ class GameEngine(object):
         self.menu = Menu(0, 0, SCREEN.width, SCREEN.height)
         self.gameover = GameOverScreen(0, 0, MENU.width, MENU.height)
         self.ripple = HudObject(64, 120, RIPPLE.width, RIPPLE.height, HUD.ripple)        
+        self.overlay = Overlay(0, 0, SCREEN.width/2, SCREEN.height, HUD.overlay)
         
 
 
     def reset(self):
         player = Player(PLAYER.width*2, BLOCK.height*2, PLAYER.width, PLAYER.height, player_image)
+        self.best = self.getBestScore()
         self.score = 0
+        self.retries += 1
         self.stage = Stage(player)
         self.hud = Hud(0, 0, HUD.width, HUD.height)
         self.menu = Menu(0, 0, SCREEN.width, SCREEN.height)
@@ -77,6 +82,7 @@ class GameEngine(object):
             
             if self.state == STATE.game:
                 self.stage.player.handleEvents(event, self.stage.grid)
+                self.overlay.handleEvents(event)
 
             if self.state == STATE.title_screen:
                 self.hud.handleEvents(event)
@@ -97,16 +103,15 @@ class GameEngine(object):
         if self.stage.reset:
             self.state = STATE.gameover
             self.gameover.show()
-            self.gameover.update(self.score, 45, 13)
-            #self.menu.gameover()
-            #self.reset()
-            #self.stage.reset = False           
+            self.gameover.update(self.score, self.best, self.retries)
+            self.best = self.getBestScore()            
             return
         if self.state != STATE.gameover:
             self.state = self.hud.state
         if self.state == STATE.game:
             #self.menu.update(self.score)
-            self.stage.update()
+            self.overlay.update()
+            self.stage.update(self.score)
             self.stage.player.checkBounds(self.width)
             if self.stage.player.receivePoint:
                 self.score += 1
@@ -119,9 +124,6 @@ class GameEngine(object):
             self.hud.update()
         
 
-
-
-
     def draw(self):
         self.screen.fill((255, 255, 255))
         self.screen.blit(self.bg, self.screen.get_rect())
@@ -131,14 +133,19 @@ class GameEngine(object):
         elif self.state == STATE.start_game:
             self.hud.draw(self.screen)
             self.hud.hide()
-        elif self.state == STATE.game:    
+        elif self.state == STATE.game:  
+            self.overlay.draw(self.screen)  
             self.stage.draw(self.screen)
             self.menu.draw(self.screen)
-            self.hud.draw(self.screen)
+            self.hud.draw(self.screen)            
         elif self.state == STATE.gameover:
             self.gameover.draw(self.screen)
         
 
+    def getBestScore(self):
+        if self.best < self.score:
+            self.best = self.score
+        return self.best
 
     def runGame(self, fps):
         self.fps = fps
