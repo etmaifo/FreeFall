@@ -41,7 +41,6 @@ class GameOverScreen(object):
     def handleEvents(self, event):
         if (event.type == MOUSEBUTTONDOWN):
             pos = pygame.mouse.get_pos()
-            print "Mouse: ", pos, " - Button: ", self.retry_button.rect.center
             if self.retry_button.rect.collidepoint(pos):
                 self.retry = True
             elif self.quit_button.rect.collidepoint(pos):
