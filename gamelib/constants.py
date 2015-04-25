@@ -25,6 +25,7 @@ class MENU:
     width = 180
     height = 288
     image = pygame.image.load(FILES.get_path("img", "gameover.png"))
+    image = pygame.transform.smoothscale(image,(width, height))
 
 class STATE:
     game = "game"
@@ -38,6 +39,7 @@ class HUD:
     width = 190
     height = 288
     title = pygame.image.load(FILES.get_path("img", "gametitle.png"))
+    title = pygame.transform.smoothscale(title, (153, 56))
     howtoplay = pygame.image.load(FILES.get_path("img", "howtoplay.png"))
     ripple = pygame.image.load(FILES.get_path("img", "ripple.png"))
     overlay = pygame.image.load(FILES.get_path("img", "overlay1.png"))
@@ -54,6 +56,7 @@ class BUTTON:
 
 class BG:
     grid = pygame.image.load(FILES.get_path("img", "grid.png"))
+    grid = pygame.transform.smoothscale(grid, (192, 422))
     image = pygame.image.load(FILES.get_path("img", "background.jpg"))
 
 

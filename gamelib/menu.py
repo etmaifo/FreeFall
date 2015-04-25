@@ -24,11 +24,17 @@ class GameOverScreen(object):
         self.retry_button = WorldObject(0, 0, BUTTON.width, BUTTON.height, BUTTON.retry)
         self.quit_button = WorldObject(0, 0, BUTTON.width, BUTTON.height, BUTTON.quit)
         self.score_label = GameText("hoog0553.ttf", 14, COLOR.dark_gray)
-        self.score = GameText("hoog0553.ttf", 14, COLOR.gray)
+        self.score = GameText("hoog0553.ttf", 14, COLOR.orange)
         self.best_label = GameText("hoog0553.ttf", 14, COLOR.dark_gray)
-        self.best = GameText("hoog0553.ttf", 14, COLOR.gray)
+        self.best = GameText("hoog0553.ttf", 14, COLOR.orange)
         self.retries_label = GameText("hoog0553.ttf", 14, COLOR.dark_gray)
-        self.retries = GameText("hoog0553.ttf", 14, COLOR.gray)
+        self.retries = GameText("hoog0553.ttf", 14, COLOR.orange)
+        self.avg = GameText("hoog0553.ttf", 38, COLOR.orange)
+        self.avg_lable = GameText("hoog0553.ttf", 12, COLOR.gray)
+        
+        self.score.set_bold(True)
+        self.best.set_bold(True)
+        self.retries.set_bold(True)
 
         self.retry = False
         self.quit = False
@@ -60,6 +66,11 @@ class GameOverScreen(object):
         self.best.rect.right = menuRect.right - 10
         self.best.rect.y = menuRect.y + 120
 
+        self.avg.rect.centerx = SCREEN.width/2
+        self.avg.rect.y = menuRect.y + 160
+        self.avg_lable.rect.left = self.avg.rect.right + 2
+        self.avg_lable.rect.bottom = self.avg.rect.bottom - 3
+
         self.retries_label.rect.x =  10
         self.retries_label.rect.y = menuRect.y + 140
         self.retries.rect.right = menuRect.right - 10
@@ -77,6 +88,8 @@ class GameOverScreen(object):
         self.score_label.set_bold(True)
         self.best_label.set_bold(True)
         self.retries_label.set_bold(True)
+        self.avg.set_bold(True)
+        self.avg_lable.set_bold(True)
 
         self.gameover_group.add(self.bg)
         self.gameover_group.add(self.retry_button)
@@ -85,17 +98,21 @@ class GameOverScreen(object):
         self.font_group.append(self.score)
         self.font_group.append(self.best_label)
         self.font_group.append(self.best)
+        self.font_group.append(self.avg)
+        self.font_group.append(self.avg_lable)
         self.font_group.append(self.retries_label)
         self.font_group.append(self.retries)
 
 
-    def update(self, score, best, retries):        
+    def update(self, score, best, retries, avg):        
         self.gameover_group.update()
         
         self.score_label.update("Score", self.score_label.rect.x, self.score_label.rect.y)
         self.score.update(score, self.score.rect.x, self.score.rect.y)
         self.best_label.update("Best", self.best_label.rect.x, self.best_label.rect.y)
         self.best.update(best, self.best.rect.x, self.best.rect.y)
+        self.avg.update(avg, self.avg.rect.x, self.avg.rect.y)
+        self.avg_lable.update("AVG", self.avg_lable.rect.x, self.avg_lable.rect.y)
         self.retries_label.update("Retries", self.retries_label.rect.x, self.retries_label.rect.y)
         self.retries.update(retries, self.retries.rect.x, self.retries.rect.y)
 

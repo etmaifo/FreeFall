@@ -43,6 +43,8 @@ class GameEngine(object):
         self.score = 0
         self.best = 0
         self.retries = 0
+        self.avg = 0
+        self.total = 0
 
         #self.bg = grid_image
         self.bg = bg
@@ -79,6 +81,9 @@ class GameEngine(object):
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
+
+            if event.type == KEYDOWN and event.key == K_q:
+                pygame.image.save(self.screen, FILES.get_path("screenshots", "screen01.jpg"))
             
             if self.state == STATE.game:
                 self.stage.player.handleEvents(event, self.stage.grid)
@@ -103,8 +108,12 @@ class GameEngine(object):
         if self.stage.reset:
             self.state = STATE.gameover
             self.gameover.show()
-            self.gameover.update(self.score, self.best, self.retries)
-            self.best = self.getBestScore()            
+            if self.retries == 0:
+                self.avg = self.score
+            else:
+                self.avg = self.getAverageScore()
+            self.best = self.getBestScore()   
+            self.gameover.update(self.score, self.best, self.retries, self.avg)         
             return
         if self.state != STATE.gameover:
             self.state = self.hud.state
@@ -115,6 +124,7 @@ class GameEngine(object):
             self.stage.player.checkBounds(self.width)
             if self.stage.player.receivePoint:
                 self.score += 1
+                self.total += 1
                 self.stage.player.receivePoint = False
 
             self.menu.update(self.score)
@@ -146,6 +156,10 @@ class GameEngine(object):
         if self.best < self.score:
             self.best = self.score
         return self.best
+
+    def getAverageScore(self):
+        avg = int(round(self.total/float(self.retries + 1))) # divide by replays
+        return avg
 
     def runGame(self, fps):
         self.fps = fps

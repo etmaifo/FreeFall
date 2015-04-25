@@ -114,7 +114,7 @@ class Overlay(WorldObject):
     def animate(self):
         self.frame += 1
         if self.frame < 30:
-            self.image.set_alpha(30 - self.frame * 2)
+            self.image.set_alpha(40 - self.frame * 2)
         else:
             self.frame = 0
 
