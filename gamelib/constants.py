@@ -73,7 +73,12 @@ class COLOR:
 class WORLD:
     gravity = 1
 
-
+class POWERUP:
+    slow = "slow"
+    reverse = "reverse"
+    immortal = "immortal"
+    points = "points"
+    normal  = "normal"
 
 class PLAYER:
     speed = 10
@@ -94,6 +99,17 @@ class BLOCK:
     block_sprite.image = pygame.image.load(FILES.get_path("img", "orange_block.png"))
     #block_sprite.image.fill(COLOR.purple)
     block_sprite.rect = block_sprite.image.get_rect()
+
+    immortal_image = pygame.image.load(FILES.get_path("img", "immortal.png"))
+    time_image = pygame.image.load(FILES.get_path("img", "time.png"))
+    reverse_image = pygame.image.load(FILES.get_path("img", "reverse.png"))
+    points_image = pygame.image.load(FILES.get_path("img", "points.png"))
+    normal_image =  pygame.image.load(FILES.get_path("img", "orange_block.png"))
+
+    point_frames = [pygame.image.load(FILES.get_path("img", "point%d.png" %i)) for i in range(1, 6, 1)]
+
+
+
 
 class DEBRIS:
     width = 8

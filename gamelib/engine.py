@@ -112,7 +112,8 @@ class GameEngine(object):
                 self.avg = self.score
             else:
                 self.avg = self.getAverageScore()
-            self.best = self.getBestScore()   
+            self.best = self.getBestScore()
+            self.avg = self.getGrade()   
             self.gameover.update(self.score, self.best, self.retries, self.avg)         
             return
         if self.state != STATE.gameover:
@@ -123,9 +124,10 @@ class GameEngine(object):
             self.stage.update(self.score)
             self.stage.player.checkBounds(self.width)
             if self.stage.player.receivePoint:
-                self.score += 1
-                self.total += 1
+                self.score += 1#(1 + self.stage.player.bonus_points)
+                self.total += 1#(1 + self.stage.player.bonus_points)
                 self.stage.player.receivePoint = False
+                self.stage.player.powered = False
 
             self.menu.update(self.score)
             self.ripple.update()
@@ -160,6 +162,27 @@ class GameEngine(object):
     def getAverageScore(self):
         avg = int(round(self.total/float(self.retries + 1))) # divide by replays
         return avg
+
+    def getGrade(self):
+        avg = int(round(self.total/float(self.retries + 1)))
+        if avg <= 10:
+            return "F"
+        elif avg <= 25:
+            return "D"
+        elif avg <= 50:
+            return "C"
+        elif avg <= 75:
+            return "C+"
+        elif avg <= 100:
+            return "B-"
+        elif avg <= 120:
+            return "B"
+        elif avg <= 130:
+            return "B+"
+        elif avg <= 140:
+            return "A-"
+        else:
+            return "A"
 
     def runGame(self, fps):
         self.fps = fps

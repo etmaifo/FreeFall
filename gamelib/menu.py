@@ -99,7 +99,7 @@ class GameOverScreen(object):
         self.font_group.append(self.best_label)
         self.font_group.append(self.best)
         self.font_group.append(self.avg)
-        self.font_group.append(self.avg_lable)
+        #self.font_group.append(self.avg_lable)
         self.font_group.append(self.retries_label)
         self.font_group.append(self.retries)
 

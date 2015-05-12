@@ -1,7 +1,12 @@
+# author: Tokelo Maifo
+# email : et.maifo@phyrebotcentral.com
+# date  : 
+
 import pygame
 from pygame.locals import *  
 from worldobject import *
 from constants import *
+
 
 class Player(Moveable):
     def __init__(self, x, y, width, height, image):
@@ -10,9 +15,15 @@ class Player(Moveable):
         self.receivePoint = False
         self.collided = False
         self.timeout = 0
+        self.power_timer = 0
+        self.bonus_points = 0
+        self.power = POWERUP.normal
         self.dead = False
         self.debris = Debris(self.rect.x, self.rect.y)
         self.debris.spawn(25)
+        self.powerup_group = pygame.sprite.RenderUpdates()
+        self.points_group = pygame.sprite.Group()
+        self.temp_group = pygame.sprite.Group()
 
 
     def handleEvents(self, event, grid):
@@ -45,14 +56,18 @@ class Player(Moveable):
             elif key[K_d]:
                 self.hspeed = PLAYER.speed
 
-            self.detect_collision()
-            self.detect_point()
+            self.detectCollision()
+            self.detectPowerup()                        
+            self.detectPoint()
+            self.consumePower()
+
 
     def animate_death(self):
         self.timeout += 1
         self.debris.update()
         if self.timeout >= 2*GAME.fps:
             self.dead = True
+
 
     def checkBounds(self, width):
         if self.rect.left < 0:
@@ -63,11 +78,12 @@ class Player(Moveable):
 
     def move(self, dx, dy):
         if dx != 0:
-            self.detect_collision(dx, 0)
+            self.detectCollision(dx, 0)
         if dy != 0:
-            self.detect_collision(0, dy)
+            self.detectCollision(0, dy)
 
-    def detect_collision(self):
+
+    def detectCollision(self):
         tempRect = pygame.Rect(self.rect)
         for sprite in self.collision_group:
             if tempRect.colliderect(sprite.rect):
@@ -77,11 +93,45 @@ class Player(Moveable):
 
         self.rect = pygame.Rect(tempRect)
 
-    def detect_point(self):
+
+    def detectPowerup(self):
+        tempRect = pygame.Rect(self.rect)
+        for sprite in self.powerup_group:
+            if tempRect.colliderect(sprite.rect):
+                self.powered = True
+                self.power = sprite.power
+                self.power_timer = 0
+                sprite.kill()
+                return
+        self.rect = pygame.Rect(tempRect)
+
+
+    def detectPoint(self):
         temprect = pygame.Rect(self.rect)
-        for sprite in self.collision_group:
+        for sprite in self.points_group:
             if sprite.rect.bottom <= temprect.bottom:
                 if sprite.givePoint:
                     self.receivePoint = True
                     sprite.givePoint = False
                 return
+
+
+    def consumePower(self):
+        if self.power == POWERUP.immortal:
+            self.temp_group = self.collision_group.copy()
+            self.collision_group.empty()
+            self.power_timer += 1
+            if self.power_timer >= 4*GAME.fps:
+                self.power_timer = 0
+                self.power = POWERUP.normal
+
+        elif self.power == POWERUP.points:
+            self.power_timer += 1
+            bonus = [2, 3, 5, 15]
+            self.bonus_points = choice(bonus)
+            self.receivePoint = True
+            if self.power_timer >= self.bonus_points:
+                self.power_timer = 0
+                self.bonus_points = 0
+                self.receivePoint = False
+                self.power = POWERUP.normal                              

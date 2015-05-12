@@ -252,21 +252,44 @@ class Block(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         #self.image = pygame.Surface((width, height))
         self.image = image
-        #self.image.fill(color)
+        self.image = pygame.transform.smoothscale(self.image, (BLOCK.width, BLOCK.height))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.hspeed = 0
         self.vspeed = 0
+        self.frame_number = 0
+        self.timeout = 0
+        self.power = POWERUP.normal
+        self.deadly = True
         self.givePoint = True
 
     def update(self):
         self.rect.y -= self.vspeed
+        if self.power != POWERUP.normal:
+            self.animate(BLOCK.point_frames)
 
 
     def get_image(self, image):
-        self.image = pygame.image.load(image).convert_alpha()
+        #self.image = pygame.image.load(image).convert_alpha()
+        rect = self.rect
+        self.image = pygame.transform.smoothscale(self.image, (BLOCK.width, BLOCK.height))
         self.rect = self.image.get_rect()
+        self.rect.x = rect.x
+        self.rect.y = rect.y
+
+
+    def animate(self, frames):        
+        self.image = frames[self.frame_number]
+        self.get_image(self.image)
+
+        self.timeout += 1
+        if self.timeout >= 6: # speed
+            self.frame_number += 1
+            if self.frame_number >= len(frames):
+                self.frame_number = 0
+            self.timeout = 0 # reset timer
+
 
 
 class Particle(Block):
@@ -309,22 +332,47 @@ class Debris(object):
 
 
 class Enemy(object):
-    def __init__(self, number, speed):
+    def __init__(self, number, speed, hasPowerUp=False):
         self.number = number
         self.blocks = pygame.sprite.RenderUpdates()
         self.givePoint = True
         self.hide = False
+        self.hasPowerUp = hasPowerUp
 
         self.spawn(speed)
 
     def spawn(self, speed):
         randomNumbers = [i for i in range(6)]
+        powerupRange = [i for i in range(30)]
+
         for i in range(self.number):
-            mult = choice(randomNumbers)        
-            block = Block(mult*BLOCK.width, SCREEN.height, BLOCK.width, BLOCK.height, BLOCK.block_sprite.image)
+            mult = choice(randomNumbers)
+            powerup = choice(powerupRange)
+            '''
+            if powerup == 0: #5 next game update
+                block = Block(mult*BLOCK.width, SCREEN.height, BLOCK.width, BLOCK.height, BLOCK.time_image)
+                block.deadly = False
+                block.power = POWERUP.slow
+            elif powerup == 0: #10 for next game update
+                block = Block(mult*BLOCK.width, SCREEN.height, BLOCK.width, BLOCK.height, BLOCK.reverse_image)
+                block.deadly = False
+                block.power = POWERUP.reverse           
+            elif powerup == 0: #71
+                block = Block(mult*BLOCK.width, SCREEN.height, BLOCK.width, BLOCK.height, BLOCK.immortal_image)
+                block.deadly = False
+                block.power = POWERUP.immortal
+            '''
+            if powerup == 17: #30 for next game update
+                block = Block(mult*BLOCK.width, SCREEN.height, BLOCK.width, BLOCK.height, BLOCK.points_image)
+                block.deadly = False
+                block.power = POWERUP.points
+            else:
+                block = Block(mult*BLOCK.width, SCREEN.height, BLOCK.width, BLOCK.height, BLOCK.normal_image)
             block.vspeed = speed
             randomNumbers.remove(mult)
+            
             self.blocks.add(block)
+
 
     def update(self):
         for block in self.blocks:
@@ -333,6 +381,7 @@ class Enemy(object):
             if block.rect.y < -BLOCK.height:
                 block.kill()
                 self.hide = True
+ 
 
 
    
