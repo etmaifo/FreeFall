@@ -7,11 +7,11 @@ class GAME:
     fps = 30
 
 class FilesPath(object):
-	def __init__(self):
-		self.path = ''
+    def __init__(self):
+        self.path = ''
 
-	def get_path(self, absolute_path, filename):
-		return os.path.join(absolute_path, filename)
+    def get_path(self, absolute_path, filename):
+        return os.path.join(absolute_path, filename)
 
 FILES = FilesPath()
 

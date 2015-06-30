@@ -45,6 +45,9 @@ class GameEngine(object):
         self.retries = 0
         self.avg = 0
         self.total = 0
+        self.screen_number = 1
+
+        self.capture_video = False
 
         #self.bg = grid_image
         self.bg = bg
@@ -83,7 +86,10 @@ class GameEngine(object):
                 sys.exit()
 
             if event.type == KEYDOWN and event.key == K_q:
-                pygame.image.save(self.screen, FILES.get_path("screenshots", "screen01.jpg"))
+                if not self.capture_video:
+                    self.capture_video = True
+                else:
+                    self.capture_video = False
             
             if self.state == STATE.game:
                 self.stage.player.handleEvents(event, self.stage.grid)
@@ -104,7 +110,10 @@ class GameEngine(object):
             self.state = STATE.game
 
 
-    def update(self):     
+    def update(self):
+        if self.capture_video:
+            self.makeVideo()     
+
         if self.stage.reset:
             self.state = STATE.gameover
             self.gameover.show()
@@ -183,6 +192,10 @@ class GameEngine(object):
             return "A-"
         else:
             return "A"
+
+    def makeVideo(self):
+        pygame.image.save(self.screen, FILES.get_path("screenshots", "screenshot%d.jpg" %self.screen_number))
+        self.screen_number += 1
 
     def runGame(self, fps):
         self.fps = fps

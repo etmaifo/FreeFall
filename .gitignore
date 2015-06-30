@@ -36,6 +36,9 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
+# Pycharm project files
+.idea/
+
 *_i.c
 *_p.c
 *_i.h
