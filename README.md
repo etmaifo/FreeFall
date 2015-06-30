@@ -9,7 +9,7 @@ The game is currently available on [itch.io](http://phyrebotcentral.itch.io/free
 
 
 ## License
-Freefall is licensed under the [MIT License](license.txt)
+Freefall is licensed under the [MIT License](License.txt)
 
 
 ## Website
